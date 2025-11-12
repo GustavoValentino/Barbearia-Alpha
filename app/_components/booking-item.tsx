@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 interface BookingItemProps {
   serviceName: string;
@@ -17,7 +17,7 @@ const BookingItem = ({
   date,
 }: BookingItemProps) => {
   return (
-    <Card className="flex w-full min-w-full flex-row items-center justify-between p-0">
+    <Card className="flex h-full w-full min-w-full flex-row items-center justify-between p-0">
       {/* esquerda */}
       <div className="flex flex-1 flex-col gap-4 p-4">
         <Badge>Confirmado</Badge>
