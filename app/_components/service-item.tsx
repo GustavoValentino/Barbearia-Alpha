@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { BarbershopService, Barbershop } from "../generated/prisma/client";
 import { Button } from "./ui/button";
@@ -30,7 +31,7 @@ interface ServiceItemProps {
 export function ServiceItem({ service }: ServiceItemProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
-  const { executeAsync, isPending } = useAction(createBooking);
+  const { isPending } = useAction(createBooking);
   const { executeAsync: executeCreateBookingCheckoutSession } = useAction(
     createBookingCheckoutSession,
   );
@@ -73,11 +74,9 @@ export function ServiceItem({ service }: ServiceItemProps) {
       toast.error("Erro ao criar checkout session");
       return;
     }
-
     if (!selectedTime || !selectedDate) {
       return;
     }
-
     const timeSplitted = selectedTime.split(":"); // [10, 00]
     const hours = timeSplitted[0];
     const minutes = timeSplitted[1];
@@ -157,6 +156,7 @@ export function ServiceItem({ service }: ServiceItemProps) {
           </div>
         </div>
       </div>
+
       <SheetContent className="w-[370px] overflow-y-auto p-0">
         <div className="flex h-full flex-col gap-6">
           <SheetHeader className="px-5 pt-6">
