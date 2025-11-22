@@ -1,26 +1,40 @@
-export const PageContainer = ({ children }: { children: React.ReactNode }) => {
-  return <div className="space-y-6 p-5">{children}</div>;
+import { cn } from "@/lib/utils";
+import React from "react";
+
+interface PageProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const PageContainer = ({ children, className }: PageProps) => {
+  return <div className={cn("space-y-6 p-5", className)}>{children}</div>;
 };
 
-export const PageSectionTitle = ({ children }: { children: string }) => {
+export const PageSectionTitle = ({ children, className }: PageProps) => {
   return (
-    <h2 className="text-foreground text-xs font-semibold uppercase">
+    <h2
+      className={cn(
+        "text-foreground text-xs font-semibold uppercase",
+        className,
+      )}
+    >
       {children}
     </h2>
   );
 };
 
-export const PageSection = ({ children }: { children: React.ReactNode }) => {
-  return <div className="space-y-3">{children}</div>;
+export const PageSection = ({ children, className }: PageProps) => {
+  return <div className={cn("space-y-3", className)}>{children}</div>;
 };
 
-export const PageSectionScroller = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const PageSectionScroller = ({ children, className }: PageProps) => {
   return (
-    <div className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+    <div
+      className={cn(
+        "flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden",
+        className,
+      )}
+    >
       {children}
     </div>
   );

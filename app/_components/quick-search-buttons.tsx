@@ -1,65 +1,40 @@
-import { Eye, Footprints, Scissors, Sparkles, User, Waves } from "lucide-react";
+import {
+  EyeIcon,
+  FootprintsIcon,
+  ScissorsIcon,
+  SparklesIcon,
+  UserIcon,
+  WavesIcon,
+} from "lucide-react";
 import Link from "next/link";
+import { Button } from "./ui/button";
 import { PageSectionScroller } from "./ui/page";
+
+const searchOptions = [
+  { label: "Cabelo", value: "cabelo", icon: ScissorsIcon },
+  { label: "Barba", value: "barba", icon: UserIcon },
+  { label: "Acabamento", value: "acabamento", icon: SparklesIcon },
+  { label: "Sobrancelha", value: "sobrancelha", icon: EyeIcon },
+  { label: "Pézinho", value: "pézinho", icon: FootprintsIcon },
+  { label: "Progressiva", value: "progressiva", icon: WavesIcon },
+];
 
 const QuickSearchButtons = () => {
   return (
-    <PageSectionScroller>
-      <Link
-        href="/barbershops?search=cabelo"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <Scissors className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">Cabelo</span>
-      </Link>
-
-      <Link
-        href="/barbershops?search=barba"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <User className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">Barba</span>
-      </Link>
-
-      <Link
-        href="/barbershops?search=acabamento"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <Sparkles className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">
-          Acabamento
-        </span>
-      </Link>
-
-      <Link
-        href="/barbershops?search=sobrancelha"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <Eye className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">
-          Sobrancelha
-        </span>
-      </Link>
-
-      <Link
-        href="/barbershops?search=pézinho"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <Footprints className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">
-          Pézinho
-        </span>
-      </Link>
-
-      <Link
-        href="/barbershops?search=progressiva"
-        className="border-border bg-card-background flex shrink-0 items-center justify-center gap-3 rounded-3xl border px-4 py-2"
-      >
-        <Waves className="size-4" />
-        <span className="text-card-foreground text-sm font-medium">
-          Progressiva
-        </span>
-      </Link>
+    <PageSectionScroller className="flex gap-3 py-2">
+      {searchOptions.map((option) => (
+        <Button
+          key={option.value}
+          variant="outline"
+          className="border-secondary bg-card text-muted-foreground hover:border-primary hover:bg-primary/5 hover:text-primary h-auto gap-2 rounded-full px-6 py-2.5 font-medium transition-all"
+          asChild
+        >
+          <Link href={`/barbershops?search=${option.value}`}>
+            <option.icon className="size-4" />
+            {option.label}
+          </Link>
+        </Button>
+      ))}
     </PageSectionScroller>
   );
 };

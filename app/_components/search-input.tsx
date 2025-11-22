@@ -17,21 +17,21 @@ const SearchInput = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
+    <form onSubmit={handleSubmit} className="relative flex w-full items-center">
       <Input
         type="text"
-        placeholder="Pesquise serviços ou barbearias"
-        className="border-border rounded-full"
+        placeholder="Buscar barbearias ou serviços..."
+        className="border-secondary bg-card focus-visible:ring-primary h-12 w-full rounded-xl pr-14 pl-5 text-base shadow-sm focus-visible:ring-1"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+
       <Button
         type="submit"
-        variant="default"
         size="icon"
-        className="rounded-full"
+        className="hover:bg-primary/90 absolute top-1.5 right-1.5 h-9 w-9 rounded-lg transition-all"
       >
-        <SearchIcon />
+        <SearchIcon size={18} />
       </Button>
     </form>
   );
