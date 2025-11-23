@@ -48,6 +48,8 @@ export function ServiceItem({ service }: ServiceItemProps) {
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
+
+    setSelectedTime(undefined);
   };
 
   const priceInReais = (service.priceInCents / 100).toLocaleString("pt-BR", {
@@ -103,23 +105,6 @@ export function ServiceItem({ service }: ServiceItemProps) {
     await stripe.redirectToCheckout({
       sessionId: checkoutSessionResult.data.id,
     });
-    // // 10:00
-    // if (!selectedTime || !selectedDate) {
-    //   return;
-    // }
-
-    // const result = await executeAsync({
-    //   serviceId: service.id,
-    //   date,
-    // });
-    // if (result.serverError || result.validationErrors) {
-    //   toast.error(result.validationErrors?._errors?.[0]);
-    //   return;
-    // }
-    // toast.success("Agendamento criado com sucesso!");
-    // setSelectedDate(undefined);
-    // setSelectedTime(undefined);
-    // setSheetIsOpen(false);
   };
 
   return (
@@ -157,83 +142,97 @@ export function ServiceItem({ service }: ServiceItemProps) {
         </div>
       </div>
 
-      <SheetContent className="w-[370px] overflow-y-auto p-0">
+      <SheetContent className="w-full max-w-[400px] overflow-y-auto p-0 lg:max-w-xl lg:rounded-l-xl">
         <div className="flex h-full flex-col gap-6">
           <SheetHeader className="px-5 pt-6">
             <SheetTitle className="text-lg font-bold">Fazer Reserva</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-4 px-5">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleDateSelect}
-              disabled={{ before: today }}
-              className="w-full p-0"
-              locale={ptBR}
-            />
-          </div>
+          <div className="flex flex-col gap-6 lg:mx-auto lg:w-full lg:max-w-md">
+            <div className="flex flex-col gap-4 px-5 lg:px-0">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={handleDateSelect}
+                disabled={{ before: today }}
+                className="mx-auto w-fit p-0"
+                locale={ptBR}
+                classNames={{
+                  month: "space-y-4 lg:w-full lg:mx-auto",
+                  caption: "flex justify-center pt-1 relative items-center",
+                  head_cell:
+                    "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] lg:w-10",
+                  cell: "h-9 w-9 text-center text-sm p-0 [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 lg:h-10 lg:w-10",
+                }}
+              />
+            </div>
 
-          {selectedDate && (
-            <>
-              <Separator />
-
-              <div className="flex gap-3 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
-                {availableTimeSlots?.data?.map((time) => (
-                  <Button
-                    key={time}
-                    variant={selectedTime === time ? "default" : "outline"}
-                    className="shrink-0 rounded-full px-4 py-2"
-                    onClick={() => setSelectedTime(time)}
-                  >
-                    {time}
-                  </Button>
-                ))}
-              </div>
-
-              <Separator />
-
-              <div className="flex flex-col gap-3 px-5">
-                <div className="border-border bg-card flex w-full flex-col gap-3 rounded-[10px] border border-solid p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-card-foreground text-base font-bold">
-                      {service.name}
-                    </p>
-                    <p className="text-card-foreground text-sm font-bold">
-                      R${priceInReaisInteger},00
-                    </p>
-                  </div>
-
-                  <div className="text-muted-foreground flex items-center justify-between text-sm">
-                    <p>Data</p>
-                    <p>{formattedDate}</p>
-                  </div>
-
-                  {selectedTime && (
-                    <div className="text-muted-foreground flex items-center justify-between text-sm">
-                      <p>Horário</p>
-                      <p>{selectedTime}</p>
+            {selectedDate && (
+              <>
+                <Separator className="lg:hidden" />{" "}
+                <div className="flex flex-wrap justify-center gap-3 overflow-x-auto px-5 lg:px-0 [&::-webkit-scrollbar]:hidden">
+                  {availableTimeSlots?.data?.map((time) => (
+                    <Button
+                      key={time}
+                      variant={selectedTime === time ? "default" : "outline"}
+                      className="shrink-0 rounded-full px-4 py-2"
+                      onClick={() => setSelectedTime(time)}
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
+                <Separator />
+                <div className="flex flex-col gap-3 px-5 lg:px-0">
+                  <div className="border-border bg-card-foreground/5 flex w-full flex-col gap-3 rounded-[10px] border border-solid p-4 shadow-inner">
+                    {/* Item (Nome e Preço) */}
+                    <div className="flex items-center justify-between">
+                      <p className="text-card-foreground text-base font-bold">
+                        {service.name}
+                      </p>
+                      <p className="text-primary text-lg font-extrabold">
+                        {priceInReais}{" "}
+                      </p>
                     </div>
-                  )}
 
-                  <div className="text-muted-foreground flex items-center justify-between text-sm">
-                    <p>Barbearia</p>
-                    <p>{service.barbershop.name}</p>
+                    <div className="border-border flex flex-col gap-2 border-t border-solid pt-2">
+                      <div className="text-muted-foreground flex items-center justify-between text-sm">
+                        <p className="font-medium">Data</p>
+                        <p className="text-card-foreground font-semibold">
+                          {formattedDate}
+                        </p>
+                      </div>
+
+                      {selectedTime && (
+                        <div className="text-muted-foreground flex items-center justify-between text-sm">
+                          <p className="font-medium">Horário</p>
+                          <p className="text-card-foreground font-semibold">
+                            {selectedTime}
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="text-muted-foreground flex items-center justify-between text-sm">
+                        <p className="font-medium">Barbearia</p>
+                        <p className="text-card-foreground font-semibold">
+                          {service.barbershop.name}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="px-5 pb-6">
-                <Button
-                  className="w-full rounded-full"
-                  disabled={isConfirmDisabled || isPending}
-                  onClick={handleConfirm}
-                >
-                  Confirmar
-                </Button>
-              </div>
-            </>
-          )}
+                <div className="px-5 pb-6 lg:px-0">
+                  <Button
+                    className="h-12 w-full cursor-pointer rounded-full text-base"
+                    disabled={isConfirmDisabled || isPending}
+                    onClick={handleConfirm}
+                  >
+                    Confirmar Agendamento
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </SheetContent>
     </Sheet>
