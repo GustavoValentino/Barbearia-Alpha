@@ -12,6 +12,7 @@ export const ChatMessage = ({
   isStreaming = false,
 }: ChatMessageProps) => {
   const isUser = message.role === "user";
+  const isAssistant = message.role === "assistant";
   const isSystem = message.role === "system";
 
   const content = message.parts
@@ -21,10 +22,23 @@ export const ChatMessage = ({
 
   if (isSystem) {
     return (
-      <div className="flex w-full flex-col gap-3 px-5 pt-6 pb-0">
-        <div className="border-border flex w-full flex-col gap-2.5 rounded-xl border p-3">
-          <div className="flex w-full items-center justify-center gap-2.5">
-            <p className="text-muted-foreground grow basis-0 text-center text-sm leading-[1.4] font-normal">
+      <div className="flex w-full justify-center px-4">
+        <div className="border-border bg-muted/50 max-w-sm rounded-xl border p-2.5 shadow-sm">
+          <p className="text-muted-foreground text-center text-xs leading-normal font-medium">
+            {content}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isUser) {
+    return (
+      <div className="flex w-full justify-end px-4">
+        <div className="flex max-w-[80%] flex-col items-end gap-1">
+          {/* Balão de Mensagem do Usuário */}
+          <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-4 py-3 shadow-md">
+            <p className="text-sm leading-relaxed font-normal break-words whitespace-normal">
               {content}
             </p>
           </div>
@@ -33,28 +47,30 @@ export const ChatMessage = ({
     );
   }
 
-  if (isUser) {
+  if (isAssistant) {
     return (
-      <div className="flex w-full flex-col items-end gap-3 pt-6 pr-5 pb-0 pl-10">
-        <div className="bg-secondary flex max-w-[calc(100%-40px)] items-center gap-2.5 rounded-full px-4 py-3">
-          <p className="text-foreground truncate text-sm leading-[1.4] font-normal break-words whitespace-normal">
-            {content}
-          </p>
+      <div className="flex w-full justify-start px-4">
+        <div className="flex max-w-[80%] items-start gap-3">
+          {/* Avatar da IA */}
+          <div className="border-border bg-primary/10 flex size-8 shrink-0 items-center justify-center rounded-full border shadow-sm">
+            <Bot className="text-primary size-4" />
+          </div>
+
+          <div className="flex flex-col items-start gap-1">
+            <div className="bg-card text-foreground rounded-xl rounded-tl-sm px-4 py-3 shadow-md">
+              <div className="text-sm leading-relaxed font-normal break-words whitespace-normal">
+                <Streamdown>{content}</Streamdown>
+              </div>
+
+              {isStreaming && (
+                <span className="bg-foreground/70 ml-1 inline-block h-3 w-1 animate-pulse"></span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="flex w-full flex-col gap-3 pt-6 pr-14 pb-0 pl-3">
-      <div className="flex w-full gap-2">
-        <div className="border-border flex size-8 shrink-0 items-center justify-center rounded-full border bg-[rgba(48,92,58,0.12)]">
-          <Bot className="text-primary size-3.5" />
-        </div>
-        <div className="text-foreground max-w-full text-sm leading-[1.4] font-normal break-words whitespace-normal">
-          <Streamdown>{content}</Streamdown>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 };

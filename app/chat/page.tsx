@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useEffect, useRef } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ChatMessage } from "./_components/chat-message";
 import { ChatInput } from "./_components/chat-input";
@@ -60,33 +60,50 @@ export default function ChatPage() {
 
   const isLoading = status === "streaming" || status === "submitted";
 
+  const allMessages = messages.length === 0 ? INITIAL_MESSAGES : messages;
+
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden rounded-[20px] bg-[var(--background)]">
-      <div className="flex w-[390px] items-center justify-between pt-6 pr-5 pb-0 pl-5">
+    <div className="mx-auto flex h-screen w-full max-w-2xl flex-col overflow-hidden bg-[var(--background)]">
+      {/* HEADER FIXO */}
+      <div className="border-border/50 sticky top-0 z-10 flex items-center justify-between border-b bg-[var(--background)] px-5 py-4 shadow-sm">
         <Link href="/">
-          <ChevronLeft className="size-6 shrink-0" />
+          <ChevronLeft className="size-6 shrink-0 text-[var(--foreground)]" />
         </Link>
-        <p className="font-merriweather text-[20px] leading-[1.4] tracking-[-1px] text-nowrap whitespace-pre text-[var(--foreground)] italic">
+        <p className="text-xl font-bold tracking-[-1px] text-nowrap whitespace-pre text-[var(--foreground)] italic">
           Aparatus
         </p>
-        <div className="flex items-center justify-end gap-[15px]" />
+
+        <div className="size-6" />
       </div>
 
-      <div className="w-full flex-1 overflow-y-auto pb-24 [&::-webkit-scrollbar]:hidden">
-        {messages.length === 0
-          ? INITIAL_MESSAGES.map((msg) => (
-              <ChatMessage key={msg.id} message={msg} />
-            ))
-          : messages.map((msg, index) => (
-              <ChatMessage
-                key={msg.id}
-                message={msg}
-                isStreaming={
-                  status === "streaming" && index === messages.length - 1
-                }
-              />
-            ))}
-        <div ref={messagesEndRef} />
+      <div className="flex-1 overflow-y-auto px-4 pt-4 [&::-webkit-scrollbar]:hidden">
+        <div className="flex flex-col gap-4">
+          {allMessages.map((msg, index) => (
+            <ChatMessage
+              key={msg.id}
+              message={msg}
+              isStreaming={
+                status === "streaming" &&
+                index === messages.length - 1 &&
+                msg.role === "assistant"
+              }
+            />
+          ))}
+
+          {isLoading &&
+            allMessages.length > 0 &&
+            allMessages[allMessages.length - 1].role === "user" && (
+              <div className="flex w-full items-center justify-start">
+                <div className="bg-primary/10 flex size-8 shrink-0 items-center justify-center rounded-full">
+                  <Loader2 className="text-primary size-4 animate-spin" />
+                </div>
+                <div className="bg-muted text-foreground ml-3 rounded-xl rounded-tl-sm px-4 py-2 text-sm">
+                  Digitando...
+                </div>
+              </div>
+            )}
+        </div>
+        <div ref={messagesEndRef} className="h-6" />
       </div>
 
       <ChatInput
