@@ -7,6 +7,8 @@ import { Button } from "@/app/_components/ui/button";
 import { Separator } from "@/app/_components/ui/separator";
 import { ServiceItem } from "@/app/_components/service-item";
 import { PhoneItem } from "@/app/_components/phone-item";
+import Footer from "@/app/_components/footer";
+import { Container } from "@/app/_components/ui/container";
 
 const BarbershopPage = async (props: PageProps<"/barbershops/[id]">) => {
   const { id } = await props.params;
@@ -25,23 +27,20 @@ const BarbershopPage = async (props: PageProps<"/barbershops/[id]">) => {
 
   return (
     <div className="flex size-full flex-col items-start overflow-clip">
-      {/* Hero Section com Imagem */}
-      <div className="relative h-[297px] w-full">
-        <div className="absolute top-0 left-0 h-full w-full">
-          <Image
-            src={barbershop.imageUrl}
-            alt={barbershop.name}
-            fill
-            className="object-cover"
-          />
-        </div>
+      <div className="relative h-[297px] w-full lg:h-[350px]">
+        <Image
+          src={barbershop.imageUrl}
+          alt={barbershop.name}
+          fill
+          className="object-cover"
+          sizes="100vw"
+        />
 
-        {/* Botão Voltar */}
         <div className="absolute top-0 left-0 flex w-full items-baseline gap-[91px] px-5 pt-6 pb-0">
           <Button
             size="icon"
             variant="secondary"
-            className="overflow-clip rounded-full"
+            className="overflow-clip rounded-full bg-white/70 shadow-md backdrop-blur-sm transition-colors hover:bg-white/90"
             asChild
           >
             <Link href="/">
@@ -51,104 +50,74 @@ const BarbershopPage = async (props: PageProps<"/barbershops/[id]">) => {
         </div>
       </div>
 
-      {/* Container Principal */}
-      <div className="bg-background w-full flex-1 rounded-tl-3xl rounded-tr-3xl">
-        {/* Informações da Barbearia */}
-        <div className="flex w-full items-center gap-1.5 px-5 pt-6 pb-0">
-          <div className="flex flex-col items-start gap-1">
-            <div className="flex items-start gap-1.5">
-              <div className="relative size-[30px] shrink-0 overflow-hidden rounded-full">
-                <Image
-                  src={barbershop.imageUrl}
-                  alt={barbershop.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <p className="text-foreground text-xl font-bold">
+      <Container
+        maxWidthClass="max-w-2xl"
+        className="relative z-10 -mt-10 py-1 lg:py-2"
+      >
+        <div className="bg-background w-full rounded-tl-3xl rounded-tr-3xl p-6 shadow-xl lg:p-8">
+          <div className="flex w-full items-center gap-4">
+            <div className="border-primary/20 relative size-[60px] shrink-0 overflow-hidden rounded-full border-2 shadow-lg">
+              <Image
+                src={barbershop.imageUrl}
+                alt={barbershop.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="flex flex-col items-start gap-1">
+              <p className="text-foreground text-2xl font-bold">
                 {barbershop.name}
               </p>
-            </div>
-            <div className="flex flex-col items-start gap-2">
-              <div className="flex items-center gap-2">
-                <p className="text-muted-foreground text-sm">
-                  {barbershop.address}
-                </p>
-              </div>
+              <p className="text-muted-foreground text-sm">
+                {barbershop.address}
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Divider */}
-        <div className="px-0 py-6">
-          <Separator />
-        </div>
+          <Separator className="my-6" />
 
-        {/* Sobre Nós */}
-        <div className="flex w-full flex-col items-start gap-3 px-5 py-0">
-          <div className="flex items-center justify-center gap-2.5">
-            <p className="text-foreground text-xs font-bold uppercase">
+          <div className="space-y-3">
+            <p className="text-foreground text-xs font-bold tracking-widest uppercase">
               SOBRE NÓS
             </p>
+            <p className="text-foreground w-full text-sm leading-relaxed">
+              {barbershop.description}
+            </p>
           </div>
-          <p className="text-foreground w-full text-sm">
-            {barbershop.description}
-          </p>
-        </div>
 
-        {/* Divider */}
-        <div className="px-0 py-6">
-          <Separator />
-        </div>
+          <Separator className="my-6" />
 
-        {/* Serviços */}
-        <div className="flex w-full flex-col items-start gap-3 px-5 py-0">
-          <div className="flex items-center justify-center gap-2.5">
-            <p className="text-foreground text-xs font-bold uppercase">
+          <div className="space-y-3">
+            <p className="text-foreground text-xs font-bold tracking-widest uppercase">
               SERVIÇOS
             </p>
+            <div className="flex w-full flex-col gap-3">
+              {barbershop.services.map((service) => (
+                <ServiceItem
+                  key={service.id}
+                  service={{ ...service, barbershop }}
+                />
+              ))}
+            </div>
           </div>
-          <div className="flex w-full flex-col gap-3">
-            {barbershop.services.map((service) => (
-              <ServiceItem
-                key={service.id}
-                service={{ ...service, barbershop }}
-              />
-            ))}
-          </div>
-        </div>
 
-        {/* Divider */}
-        <div className="px-0 py-6">
-          <Separator />
-        </div>
+          <Separator className="my-6" />
 
-        {/* Contato */}
-        <div className="flex w-full flex-col items-start gap-3 px-5 py-0">
-          <div className="flex items-center justify-center gap-2.5">
-            <p className="text-foreground text-xs font-bold uppercase">
+          <div className="space-y-3">
+            <p className="text-foreground text-xs font-bold tracking-widest uppercase">
               CONTATO
             </p>
-          </div>
-          <div className="flex w-full flex-col gap-3">
-            {barbershop.phones.map((phone, index) => (
-              <PhoneItem key={index} phone={phone} />
-            ))}
+            <div className="flex w-full flex-col gap-3">
+              {barbershop.phones?.map((phone: string, index: number) => (
+                <PhoneItem key={index} phone={phone} />
+              ))}
+            </div>
           </div>
         </div>
+      </Container>
 
-        {/* Footer */}
-        <div className="flex w-full flex-col items-center gap-2.5 px-0 pt-[60px] pb-0">
-          <div className="bg-secondary flex w-full flex-col items-start justify-center gap-1.5 px-[30px] py-8 text-xs leading-none">
-            <p className="text-foreground font-semibold">
-              © 2025 Copyright Aparatus
-            </p>
-            <p className="text-muted-foreground font-normal">
-              Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
